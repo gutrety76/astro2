@@ -17,25 +17,9 @@ services:
       - "8000:8000"
       - "8001:8001"
     depends_on:
-      - node-service
       - api-service
       - ui-service
-      - prediction-service
       - rabbitmq
-      - postgres
-
-  node-service:
-    build:
-      context: ./node-service
-      dockerfile: Dockerfile
-    volumes:
-      - ./node-service:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - "3001:3001"
-    depends_on:
-      - rabbitmq
-      - postgres
 
   api-service:
     build:
@@ -48,7 +32,6 @@ services:
       - "3003:3003"
     depends_on:
       - rabbitmq
-      - postgres
 
   ui-service:
     build:
@@ -60,33 +43,20 @@ services:
     ports:
       - "3000:3000"
 
-  prediction-service:
-    build:
-      context: ./prediction-service
-      dockerfile: Dockerfile
-    volumes:
-      - ./prediction-service:/usr/src/app
-    depends_on:
-      - rabbitmq
-      - postgres
-
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:
       - "5672:5672"
       - "15672:15672"
 
-  postgres:
-    image: postgres:15
+  db:
+    image: postgres
+    restart: always
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_DB: astro
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: hamburger3202
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
-
-volumes:
-  postgres_data:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

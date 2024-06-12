@@ -30,7 +30,6 @@ const pool = new Pool({
 app.get('/get_zodiac_predictions_by_date', async (req, res) => {
   try {
     const zodiac = zodiac_flags.get(req.query.zodiac)
-    console.log(zodiac)
     const [day, month, year] = req.query.date.split('.');
     const formattedDate = `${year}-${month}-${day}`;
     const result = await pool.query('SELECT * FROM zodiac_prediction');
@@ -42,10 +41,22 @@ app.get('/get_zodiac_predictions_by_date', async (req, res) => {
 });
 
 
+app.get('/', async (req, res) => {
+  try {
+    
+    const result = await pool.query('SELECT * FROM zodiac_prediction');
+    console.log(result.rows)
+    res.json(result.rows)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 app.get('/get_zodiac_predictions', async (req, res) => {
   try {
+    console.log(req.query)
     const zodiac = zodiac_flags.get(req.query.zodiac).value
     const [day, month, year] = req.query.date_now.split('.');
     const start_date = `${year}-${month}-${day}`;
@@ -55,8 +66,9 @@ app.get('/get_zodiac_predictions', async (req, res) => {
 
     const end_date = addDays(start_date, days_to_get)
     
-    const result = await pool.query('SELECT * FROM zodiac_prediction  WHERE zodiac = $1 AND date BETWEEN $2 AND $3', [zodiac, start_date, end_date]);
-    res.json(result.rows);
+    // const result = await pool.query('SELECT * FROM zodiac_prediction  WHERE zodiac = $1 AND date BETWEEN $2 AND $3', [zodiac, start_date, end_date]);
+    res.json({d:123});
+    // res.json(result.rows);
     console.log(result)
 
   } catch (err) {

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# wait-for-it.sh
-# Use this script to wait for a service to be ready
 
 HOST=$1
 PORT=$2

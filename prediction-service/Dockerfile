@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     gnupg
 
 # Install Ollama
-RUN curl -sSL https://ollama.ai/install.sh | bash
+# RUN curl -sSL https://ollama.ai/install.sh | bash
 
 # Install Python dependencies
 COPY requirements.txt ./

@@ -15,7 +15,7 @@ RUN npm install
 
 # Copy wait-for-it script to the working directory
 COPY wait-for-it.sh /usr/src/app/
-RUN dos2unix /usr/src/app/wait-for-it.sh
+#RUN dos2unix /usr/src/app/wait-for-it.sh
 
 # Copy the rest of the application code to the working directory
 COPY . .
@@ -30,4 +30,7 @@ RUN chmod +x /usr/src/app/wait-for-it.sh
 EXPOSE 3003
 
 # Define the command to run the app with wait-for-it script
-CMD ["./wait-for-it.sh", "rabbitmq", "5672", "--", "nodemon", "index.js"]
+# CMD ["./wait-for-it.sh", "rabbitmq", "5672", "--", "nodemon", "index.js"]
+CMD ["./wait-for-it.sh", "rabbitmq", "5672"]
+
+CMD ["nodemon", "index.js"]
