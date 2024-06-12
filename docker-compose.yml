@@ -1,80 +1,3 @@
-# version: '3.8'
-
-# services:
-#   kong:
-#     image: kong:2.6
-#     environment:
-#       KONG_DATABASE: "off"
-#       KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yml"
-#       KONG_PROXY_ACCESS_LOG: "/dev/stdout"
-#       KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
-#       KONG_PROXY_ERROR_LOG: "/dev/stderr"
-#       KONG_ADMIN_ERROR_LOG: "/dev/stderr"
-#       KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-#     volumes:
-#       - ./kong.yml:/usr/local/kong/declarative/kong.yml
-#     ports:
-#       - "8000:8000"
-#       - "8001:8001"
-#     depends_on:
-#       - node-service
-
-#   node-service:
-#     build:
-#       context: ./node-service
-#       dockerfile: Dockerfile
-#     ports:
-#       - "3001:3001"
-#   ui-service:
-#     build:
-#       context: ./ui-service
-#       dockerfile: Dockerfile
-#     ports:
-#       - "3000:3000"
-  
-
-# version: '3.8'
-
-# services:
-#   kong:
-#     image: kong:2.6
-#     environment:
-#       KONG_DATABASE: "off"
-#       KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yml"
-#       KONG_PROXY_ACCESS_LOG: "/dev/stdout"
-#       KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
-#       KONG_PROXY_ERROR_LOG: "/dev/stderr"
-#       KONG_ADMIN_ERROR_LOG: "/dev/stderr"
-#       KONG_ADMIN_LISTEN: "0.0.0.0:8001"
-#     volumes:
-#       - ./kong.yml:/usr/local/kong/declarative/kong.yml
-#     ports:
-#       - "8000:8000"
-#       - "8001:8001"
-#     depends_on:
-#       - node-service
-#       - ui-service
-
-#   node-service:
-#     build:
-#       context: ./node-service
-#       dockerfile: Dockerfile
-#     volumes:
-#       - ./node-service:/usr/src/app
-#       - /usr/src/app/node_modules
-#     ports:
-#       - "3001:3001" 
-
-#   ui-service:
-#     build:
-#       context: ./ui-service
-#       dockerfile: Dockerfile
-#     volumes:
-#       - ./ui-service:/usr/src/app
-#       - /usr/src/app/node_modules
-#     ports:
-#       - "3000:3000"
-
 version: '3.8'
 
 services:
@@ -99,6 +22,7 @@ services:
       - ui-service
       - prediction-service
       - rabbitmq
+      - postgres
 
   node-service:
     build:
@@ -111,6 +35,7 @@ services:
       - "3001:3001"
     depends_on:
       - rabbitmq
+      - postgres
 
   api-service:
     build:
@@ -123,6 +48,7 @@ services:
       - "3003:3003"
     depends_on:
       - rabbitmq
+      - postgres
 
   ui-service:
     build:
@@ -142,9 +68,25 @@ services:
       - ./prediction-service:/usr/src/app
     depends_on:
       - rabbitmq
+      - postgres
 
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:
       - "5672:5672"
       - "15672:15672"
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+volumes:
+  postgres_data:
