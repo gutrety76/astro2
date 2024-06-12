@@ -1,0 +1,35 @@
+_format_version: "2.1"
+_transform: true
+
+services:
+- name: example_service
+  url: http://httpbin.org
+  routes:
+  - name: example_route
+    paths:
+    - /mock
+    strip_path: true
+
+- name: node_service
+  url: http://node-service:3001
+  routes:
+  - name: node_route
+    paths:
+    - /data
+    strip_path: true
+
+- name: api_service
+  url: http://api-service:3003
+  routes:
+  - name: node_route
+    paths:
+    - /api-v1
+    strip_path: true
+
+- name: ui_service
+  url: http://ui-service:3000
+  routes:
+  - name: ui_route
+    paths:
+    - /
+    strip_path: true

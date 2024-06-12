@@ -1,0 +1,17 @@
+# Ignore node_modules directories for all services
+/node-service/node_modules/
+/ui-service/node_modules/
+/api-service/node_modules/
+/prediction-service/node_modules/
+
+# Ignore package-lock.json files for all services
+/node-service/package-lock.json
+/ui-service/package-lock.json
+/api-service/package-lock.json
+/prediction-service/package-lock.json
+
+# Ignore build output for Next.js in ui-service
+/ui-service/.next/
+
+# Ignore Python bytecode files
+**/*.pyc
