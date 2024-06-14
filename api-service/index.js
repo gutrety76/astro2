@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const Enum = require('enum');
-const { addDays } = require('./helpers');
+const { addDays, getFormatedDate } = require('./helpers');
 
 const app = express();
 const port = 3003;
@@ -32,21 +32,10 @@ app.get('/get_zodiac_predictions_by_date', async (req, res) => {
     const zodiac = zodiac_flags.get(req.query.zodiac)
     const [day, month, year] = req.query.date.split('.');
     const formattedDate = `${year}-${month}-${day}`;
-    const result = await pool.query('SELECT * FROM zodiac_prediction');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-app.get('/', async (req, res) => {
-  try {
+    const result = await pool.query('SELECT * FROM zodiac_prediction where date = $1', [formattedDate]);
     
-    const result = await pool.query('SELECT * FROM zodiac_prediction');
-    console.log(result.rows)
-    res.json(result.rows)
+    res.json(result.rows);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -56,21 +45,20 @@ app.get('/', async (req, res) => {
 
 app.get('/get_zodiac_predictions', async (req, res) => {
   try {
-    console.log(req.query)
-    const zodiac = zodiac_flags.get(req.query.zodiac).value
-    const [day, month, year] = req.query.date_now.split('.');
-    const start_date = `${year}-${month}-${day}`;
-
-    const days_to_get = parseInt(req.query.days_to_get)
-
-
-    const end_date = addDays(start_date, days_to_get)
     
-    // const result = await pool.query('SELECT * FROM zodiac_prediction  WHERE zodiac = $1 AND date BETWEEN $2 AND $3', [zodiac, start_date, end_date]);
-    res.json({d:123});
-    // res.json(result.rows);
-    console.log(result)
-
+    const zodiac = zodiac_flags.get(req.query.zodiac).key;
+    const [day, month, year] = req.query.date_now.split('.');
+    var start_date = new Date(year, parseInt(month) - 1, day)
+    
+    const days_to_get = parseInt(req.query.days_to_get);
+    
+    var end_date = addDays(start_date, days_to_get);
+    start_date = getFormatedDate(start_date)
+    end_date = getFormatedDate(end_date)
+    console.log(start_date, end_date)
+    const result = await pool.query(`SELECT * FROM zodiac_prediction WHERE zodiac = $1 AND date BETWEEN $2 AND $3`, [zodiac, start_date, end_date]);
+    res.json(result.rows);
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });

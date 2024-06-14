@@ -12,10 +12,10 @@ const getData = async () => {
   const params = new URLSearchParams();
   params.append('zodiac', 'Scorpio');
   params.append('date_now', currentDate);
-  params.append('days_to_get', 10000);
+  params.append('days_to_get', 11);
 
-  const url = `http://api-service:3003/`;
-  // const url = `http://api-service:3003/get_zodiac_predictions?${params.toString()}`;
+  // const url = `http://api-service:3003/`;
+  const url = `http://api-service:3003/get_zodiac_predictions?${params.toString()}`;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -31,18 +31,18 @@ const getData = async () => {
 
 export default async function Home() {
   const data = await getData();
-  console.log(data);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      {data && data.map((value, key)=> {
+    <main className="flex  flex-col items-center justify-start">
+      {/* {data && data.map((value, key)=> {
+        console.log(value)
         return (<>
-        <div key={value.id}>
-          zodiac: {value.zodiac}
-          <br/>
-          prediction_text: {value.prediction_text}
+        <div className="flex flex-col my-2 items-start w-full justify-start" key={value.id}>
+          <div>zodiac: {value.zodiac}</div>
+          <div dangerouslySetInnerHTML={{__html: value.prediction_text_general}}></div>
           </div>
           </>)
-      })}
+      })} */}
+      <div></div>
     </main>
   );
 }

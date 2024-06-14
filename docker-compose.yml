@@ -32,6 +32,7 @@ services:
       - "3003:3003"
     depends_on:
       - rabbitmq
+      - db
 
   ui-service:
     build:
@@ -42,7 +43,20 @@ services:
       - /usr/src/app/node_modules
     ports:
       - "3000:3000"
+    depends_on:
+      - api-service
 
+  # auth-service:
+  #   build:
+  #     context: ./auth-service
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./auth-service:/usr/src/app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - db
+      
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:

@@ -20,9 +20,6 @@ COPY wait-for-it.sh /usr/src/app/
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Install nodemon for hot reloading
-RUN npm install -g nodemon
-
 # Make wait-for-it script executable
 RUN chmod +x /usr/src/app/wait-for-it.sh
 
@@ -30,7 +27,5 @@ RUN chmod +x /usr/src/app/wait-for-it.sh
 EXPOSE 3003
 
 # Define the command to run the app with wait-for-it script
-# CMD ["./wait-for-it.sh", "rabbitmq", "5672", "--", "nodemon", "index.js"]
-CMD ["./wait-for-it.sh", "rabbitmq", "5672"]
 
-CMD ["nodemon", "index.js"]
+CMD ["npm", "run", "dev"]
